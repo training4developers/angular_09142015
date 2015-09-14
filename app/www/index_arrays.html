@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Introduction to Angular.js</title>
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				<ul>
+					<li ng-repeat="country in countries">{{$id}} {{$index}} {{country.name}}
+						<ul>
+							<li ng-repeat="color in country.colors">{{$odd}} {{color}}</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.controller("MyCtrl", function($scope) {
+					/*
+					var o = {
+						name: "Eric",
+						"age": 38,
+						hasHair: false,
+						address: {
+							streetNumber: "1600",
+							streetName: "Pennsylvania Ave",
+							city: "Washington DC"
+						},
+						favFoods: ["pizza","biryani","coke"],
+						favPlaces: [
+							{ location: "Mountain View", weather: "sunny"},
+							{ location: "Boston", weather: "cloudy"},
+							{ location: "Bethesda", weather: "sunny"}
+						],
+						getFullAddress: function() {
+							return this.streetNumber + " " + this.streetName + " " + this.city;
+						}
+					};
+
+					var people = [o];
+
+					people.push({
+						name: "New Person"
+					});
+
+					console.dir(people);
+
+
+
+					$scope.colors = ["red","green","white","blue"];
+
+					var usa = { name: "United States", colors: ["red","blue","white"] };
+
+					$scope.countries = [
+						{ name: "Mexico", colors: ["red","green","white"] },
+						{ name: "United Kingdom", colors: ["red","green","blue"] },
+						usa
+					];
+
+					console.dir($scope);
+					*/
+
+					var items = [1,2,3];
+					items.push(4);
+					items[1000] = 5;
+					items.someOtherProp = "Hi Class!";
+					console.dir(items);
+
+					var o = {};
+
+					o[0] = "Some text";
+					o["some-prop"] = "Hi!";
+					o[""] = "Test!";
+					console.log(o);
+
+				});
+
+		</script>
+
+	</body>
+
+</html>

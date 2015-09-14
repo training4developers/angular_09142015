@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Introduction to Angular.js</title>
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				Today's Date {{today | date:'short'}}<br>
+				Country Name: <input ng-model="countryName">
+				<ul>
+					<li ng-repeat="country in countries | filter:{'name':countryName} | orderBy:'name':true">{{country.name}} {{country.independence | date:'longDate'}}
+						<ul>
+							<li ng-repeat="color in country.colors track by $index | orderBy:'toString()'">{{color}}</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.controller("MyCtrl", function($scope) {
+
+					// unix timestamp
+					var today = Date.now();
+
+					// Date object
+					$scope.today = new Date(today + (1000*60*60*24*7));
+
+					$scope.colors = ["red","green","white","blue"];
+
+						$scope.countries = [
+							{ name: "United Kingdom", colors: ["red","green","green","blue"] },
+							{ name: "Mexico", independence: new Date(1820,8,16), colors: ["red","green","white"] },
+							{ name: "United States", colors: ["red","blue","white"] }
+						];
+
+					console.dir($scope);
+
+				});
+
+		</script>
+
+	</body>
+
+</html>

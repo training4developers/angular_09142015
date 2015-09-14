@@ -1,0 +1,20 @@
+{
+  "name": "angular_09142015",
+  "version": "0.0.0",
+  "authors": [
+    "Eric W. Greene <eric@training4developers.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/www/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.5",
+    "jquery": "~2.1.4"
+  }
+}

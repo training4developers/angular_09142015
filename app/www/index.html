@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Introduction to Angular.js</title>
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				<table>
+					<tr ng-repeat="grant in grants">
+						<td>{{grant.id}}</td>
+						<td>{{grant.name}}</td>
+						<td>{{grant.administratorName}}</td>
+						<td>{{grant.dateAwarded}}</td>
+						<td>{{grant.dateStarted}}</td>
+					</tr>
+				</table>
+				<button ng-click="addGrant()">Add Grant</button>
+				<div ng-if="showGrantForm">
+					<form ng-controller="GrantCtrl">
+						<div>
+							<label>Unique Id
+								<input type="number" ng-model="grant.id">
+							</label>
+						</div>
+						<div>
+							<label>Grant Name
+								<input ng-model="grant.name">
+							</label>
+						</div>
+						<div>
+							<label>Administrator Name
+								<input ng-model="grant.administratorName">
+							</label>
+						</div>
+						<div>
+							<label>Date Awarded
+								<input type="date" ng-model="grant.dateAwarded">
+							</label>
+						</div>
+						<div>
+							<label>Date Started
+								<input type="date" ng-model="grant.dateStarted">
+							</label>
+						</div>
+						{{$id}}<button ng-click="saveMe()">Save Me</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.controller("GrantCtrl", function($scope) {
+
+					$scope.saveMe = function() {
+
+						console.log($scope.$id);
+						//console.dir($scope.grant);
+
+						$scope.grants.push($scope.grant);
+						//$scope.$parent.$parent.showGrantForm = false;
+						$scope.hideAddGrantForm();
+					};
+
+				})
+				.controller("MyCtrl", function($scope) {
+
+					$scope.grants = [];
+
+					$scope.showAddGrantForm = function() {
+						$scope.showGrantForm = true;
+					}
+
+					$scope.hideAddGrantForm = function() {
+						$scope.showGrantForm = false;
+					}
+
+					$scope.addGrant = function() {
+						$scope.showAddGrantForm();
+					};
+
+
+				});
+
+		</script>
+
+	</body>
+
+</html>

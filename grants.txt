@@ -1,0 +1,10 @@
+table of grants
+
+grant
+	unique id
+	name of the grant - filter
+	name of administrator
+	grant award date - sort by
+	grant start date
+
+use ng-repeat to build a table of grants
