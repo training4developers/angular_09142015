@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Introduction to Angular.js</title>
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+	</head>
+
+	<body>
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				{{message | customUpperCase | customAppend:'!!!!!' }}
+				{{ll.length}}
+				<ul>
+					<li ng-repeat="number in (ll = (numbers | lessThan:10))">{{number}}</li>
+				</ul>
+
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.filter("updateValue", function() {
+
+					return function(list, summary) {
+						summary.listLength = list.length;
+
+						return list;
+					}
+
+				})
+				.filter("lessThan", function() {
+
+					return function(list, maxNumber) {
+						var newList = [];
+						for (var x=0;x<list.length;x++) {
+							if (list[x] < maxNumber) {
+								newList.push(list[x]);
+							}
+						}
+						return newList;
+					};
+
+				})
+				.filter("customAppend", function($log) {
+
+					return function(value, strToAppend) {
+						$log.log("called custom append filter");
+						return String(value) + String(strToAppend);
+					};
+
+				})
+				.filter("customUpperCase", function() {
+
+					return function(value) {
+						return String(value).toUpperCase();
+					};
+
+				})
+				.controller("MyCtrl", function($scope, $filter) {
+					$scope.summary = {
+						listLength: 0
+					};
+					$scope.numbers = [-56, 458,3,5,8,23,400,567];
+
+					console.dir($scope.$eval("ll = (numbers | lessThan:10)"));
+
+					console.dir($scope);
+
+					$scope.message = "Hello World";
+
+
+					console.log($filter("customUpperCase")($scope.message));
+				});
+
+		</script>
+
+	</body>
+
+</html>
