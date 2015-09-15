@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Introduction to Angular.js</title>
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+		<style>
+
+			.ng-touched.ng-invalid {
+				border: 2px solid red;
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="GrantsCtrl">
+				<table>
+					<thead>
+						<tr>
+							<th>Grant Names</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="grant in grants">
+							<td>
+								<span>{{grant.name}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Administrator</th>
+							<th>Awarded</th>
+							<th>Started</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="grant in grants">
+							<td>
+								<span>{{grant.name}}</span>
+							</td>
+							<td>
+								<input ng-model="grantEdit.id" ng-show="editMode" size="5">
+								<span ng-hide="editMode">{{grant.id}}</span>
+							</td>
+							<td>
+								<input ng-model="grantEdit.name" ng-show="editMode" size="10">
+								<span ng-hide="editMode">{{grant.name}}</span>
+							</td>
+							<td>
+								<input ng-model="grantEdit.administratorName" ng-show="editMode" size="10">
+								<span ng-hide="editMode">{{grant.administratorName}}</span>
+							</td>
+							<td>
+								<input type="date" ng-model="grantEdit.dateAwarded" ng-show="editMode">
+								<span ng-hide="editMode">{{grant.dateAwarded | date:"MM/dd/yyyy"}}</span>
+							</td>
+							<td>
+								<input type="date" ng-model="grantEdit.dateStarted" ng-show="editMode">
+								<span ng-hide="editMode">{{grant.dateStarted | date:"MM/dd/yyyy"}}</span>
+							</td>
+							<td>
+								<button ng-click="editGrant(this)" ng-hide="editMode">Edit</button>
+								<button ng-click="saveGrant(this)" ng-show="editMode">Save</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<button ng-click="addGrant()">Add Grant</button>
+				<div ng-if="showGrantForm">
+					<form ng-controller="GrantCtrl" name="grantForm" novalidate>
+						<div>
+							<label>Unique Id
+								<input type="number" ng-model="grant.id" required>
+							</label>
+						</div>
+						<div>
+							<label>Grant Name
+								<input ng-model="grant.name" custom-required="5" name="grantName">
+							</label>
+							<span ng-show="grantForm.grantName.$touched &&
+								grantForm.grantName.$invalid">Please enter a grant name!</span>
+						</div>
+						<div>
+							<label>Administrator Name
+								<input ng-model="grant.administratorName" required>
+							</label>
+						</div>
+						<div>
+							<label>Date Awarded
+								<input type="date" ng-model="grant.dateAwarded">
+							</label>
+						</div>
+						<div>
+							<label>Date Started
+								<input type="date" ng-model="grant.dateStarted">
+							</label>
+						</div>
+						<div>
+							<fieldset>
+								<legend>Funding Source</legend>
+								<div>
+									<label>NIH <input type="radio" ng-model="grant.fundingSource" name="fundingSource" value="NIH" checked></label>
+								</div>
+								<div>
+									<label>WRAIR <input type="radio" ng-model="grant.fundingSource" name="fundingSource" value="WRAIR"></label>
+								</div>
+								<div>
+									<label>Girl Scout Cookies <input type="radio" ng-model="grant.fundingSource" name="fundingSource" value="GSC"></label>
+								</div>
+							</fieldset>
+						</div>
+						<div>
+							<label>State
+								<select name="grantState" ng-model="grant.state"
+									ng-options="state.code as state.name group by state.region for state in states | orderBy:'region':true">
+									<option value="">Select One...</option>
+								</select>
+							</label>
+						</div>
+						<button ng-click="saveMe()">Save Me</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.directive("customRequired", function() {
+
+					return {
+						require: "ngModel",
+						link: function(scope, element, attrs, ctrl) {
+
+							console.log(attrs.customRequired);
+
+							function validator(value) {
+
+								if (value == null || String(value).length === 0) {
+									ctrl.$setValidity("custom-required", false);
+									return;
+								} else {
+									ctrl.$setValidity("custom-required", true);
+									return value;
+								}
+
+							}
+
+							ctrl.$formatters.push(validator);
+							ctrl.$parsers.push(validator);
+
+						}
+					};
+
+				})
+				.controller("GrantCtrl", function($scope) {
+
+					$scope.saveMe = function() {
+
+						console.log($scope.$id);
+						//console.dir($scope.grant);
+
+						$scope.grants.push($scope.grant);
+						//$scope.$parent.$parent.showGrantForm = false;
+						$scope.hideAddGrantForm();
+					};
+
+				})
+				.controller("GrantsCtrl", function($scope) {
+
+					$scope.states = [
+						{ code: "MD", name:"Maryland", region: "Mid-Atlantic" },
+						{ code: "HI", name:"Hawaii", region: "Vacation" },
+						{ code: "CA", name:"California", region: "Pacific Coast" },
+						{ code: "VA", name:"Virginia", region: "Mid-Atlantic" },
+						{ code: "OR", name:"Oregon", region: "Pacific Coast" },
+						{ code: "AK", name:"Alaska", region: "Vacation" }
+					]
+
+					$scope.grants = [
+						{ id: 1, name: "Grant 1", administratorName: "Grant 1 Admin", dateAwarded: new Date(), dateStarted: new Date() },
+						{ id: 2, name: "Grant 2", administratorName: "Grant 2 Admin", dateAwarded: new Date(), dateStarted: new Date() },
+						{ id: 3, name: "Grant 3", administratorName: "Grant 3 Admin", dateAwarded: new Date(), dateStarted: new Date() }
+					];
+
+					$scope.showAddGrantForm = function() {
+						$scope.showGrantForm = true;
+					}
+
+					$scope.hideAddGrantForm = function() {
+						$scope.showGrantForm = false;
+					}
+
+					$scope.addGrant = function() {
+						$scope.showAddGrantForm();
+					};
+
+					$scope.editGrant = function(scope) {
+						scope.grantEdit = angular.copy(scope.grant);
+						scope.editMode = true;
+					};
+
+					$scope.saveGrant = function(scope) {
+						scope.grant = angular.extend(scope.grant, scope.grantEdit);
+						delete scope.grantEdit;
+						scope.editMode = false;
+					}
+
+				});
+
+		</script>
+
+	</body>
+
+</html>
