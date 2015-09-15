@@ -87,7 +87,7 @@
 						</div>
 						<div>
 							<label>Grant Name
-								<input ng-model="grant.name" custom-required="5" name="grantName">
+								<input ng-model="grant.name" required name="grantName">
 							</label>
 							<span ng-show="grantForm.grantName.$touched &&
 								grantForm.grantName.$invalid">Please enter a grant name!</span>
@@ -138,33 +138,6 @@
 		<script>
 
 			angular.module("MyApp", [])
-				.directive("customRequired", function() {
-
-					return {
-						require: "ngModel",
-						link: function(scope, element, attrs, ctrl) {
-
-							console.log(attrs.customRequired);
-
-							function validator(value) {
-
-								if (value == null || String(value).length === 0) {
-									ctrl.$setValidity("custom-required", false);
-									return;
-								} else {
-									ctrl.$setValidity("custom-required", true);
-									return value;
-								}
-
-							}
-
-							ctrl.$formatters.push(validator);
-							ctrl.$parsers.push(validator);
-
-						}
-					};
-
-				})
 				.controller("GrantCtrl", function($scope) {
 
 					$scope.saveMe = function() {
