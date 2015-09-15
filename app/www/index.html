@@ -11,15 +11,64 @@
 	<body>
 
 		<div ng-app="MyApp">
-			<div ng-controller="MyCtrl">
+			<div ng-controller="GrantsCtrl">
 				<table>
-					<tr ng-repeat="grant in grants">
-						<td>{{grant.id}}</td>
-						<td>{{grant.name}}</td>
-						<td>{{grant.administratorName}}</td>
-						<td>{{grant.dateAwarded}}</td>
-						<td>{{grant.dateStarted}}</td>
-					</tr>
+					<thead>
+						<tr>
+							<th>Grant Names</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="grant in grants">
+							<td>
+								<span>{{grant.name}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Administrator</th>
+							<th>Awarded</th>
+							<th>Started</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="grant in grants">
+							<td>
+								<span>{{grant.name}}</span>
+							</td>
+							<td>
+								<input ng-model="grantEdit.id" ng-show="editMode" size="5">
+								<span ng-hide="editMode">{{grant.id}}</span>
+							</td>
+							<td>
+								<input ng-model="grantEdit.name" ng-show="editMode" size="10">
+								<span ng-hide="editMode">{{grant.name}}</span>
+							</td>
+							<td>
+								<input ng-model="grantEdit.administratorName" ng-show="editMode" size="10">
+								<span ng-hide="editMode">{{grant.administratorName}}</span>
+							</td>
+							<td>
+								<input type="date" ng-model="grantEdit.dateAwarded" ng-show="editMode">
+								<span ng-hide="editMode">{{grant.dateAwarded | date:"MM/dd/yyyy"}}</span>
+							</td>
+							<td>
+								<input type="date" ng-model="grantEdit.dateStarted" ng-show="editMode">
+								<span ng-hide="editMode">{{grant.dateStarted | date:"MM/dd/yyyy"}}</span>
+							</td>
+							<td>
+								<button ng-click="editGrant(this)" ng-hide="editMode">Edit</button>
+								<button ng-click="saveGrant(this)" ng-show="editMode">Save</button>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 				<button ng-click="addGrant()">Add Grant</button>
 				<div ng-if="showGrantForm">
@@ -49,7 +98,7 @@
 								<input type="date" ng-model="grant.dateStarted">
 							</label>
 						</div>
-						{{$id}}<button ng-click="saveMe()">Save Me</button>
+						<button ng-click="saveMe()">Save Me</button>
 					</form>
 				</div>
 			</div>
@@ -71,9 +120,13 @@
 					};
 
 				})
-				.controller("MyCtrl", function($scope) {
+				.controller("GrantsCtrl", function($scope) {
 
-					$scope.grants = [];
+					$scope.grants = [
+						{ id: 1, name: "Grant 1", administratorName: "Grant 1 Admin", dateAwarded: new Date(), dateStarted: new Date() },
+						{ id: 2, name: "Grant 2", administratorName: "Grant 2 Admin", dateAwarded: new Date(), dateStarted: new Date() },
+						{ id: 3, name: "Grant 3", administratorName: "Grant 3 Admin", dateAwarded: new Date(), dateStarted: new Date() }
+					];
 
 					$scope.showAddGrantForm = function() {
 						$scope.showGrantForm = true;
@@ -87,6 +140,16 @@
 						$scope.showAddGrantForm();
 					};
 
+					$scope.editGrant = function(scope) {
+						scope.grantEdit = angular.copy(scope.grant);
+						scope.editMode = true;
+					};
+
+					$scope.saveGrant = function(scope) {
+						scope.grant = angular.extend(scope.grant, scope.grantEdit);
+						delete scope.grantEdit;
+						scope.editMode = false;
+					}
 
 				});
 
