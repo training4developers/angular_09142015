@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Introduction to Angular.js</title>
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+	</head>
+
+	<body>
+		<div id="my-app">
+			<div custom-dir>
+
+			</div>
+			<footer custom-include="footer.html"></footer>
+		</div>
+		<!--
+		<div id="my-app2">
+			<div ng-controller="MyCtrl">
+				{{message}}
+			</div>
+		</div>
+		<div id="my-app3">
+			<div ng-controller="MyCtrl">
+				<input ng-model="message">
+				<button ng-click="updateMessageForAllApps()">Update Message</button>
+			</div>
+		</div> -->
+
+		<script>
+
+			function Events() {
+
+				var events = {};
+
+				this.trigger = function(eventName, eventArgs) {
+
+					if (events[eventName]) {
+						events[eventName].forEach(function(eventHandler) {
+							eventHandler(eventArgs);
+						});
+					}
+				};
+
+				this.on = function(eventName, eventHandler) {
+
+					if (!events[eventName]) {
+						events[eventName] = [];
+					}
+
+					events[eventName].push(eventHandler);
+				}
+
+			}
+
+			window.globalEvents = new Events();
+
+
+			angular.module("MyApp", [])
+				.directive("customInclude", function($compile, $templateRequest, Events) {
+
+					return {
+						link: function(scope, element, attrs) {
+
+							Events.trigger("updated-summary", {
+								total: scope.total
+							});
+
+							scope.message = "Hi Class!";
+
+							$templateRequest(attrs["customInclude"]).then(function(tpl) {
+								console.log(tpl);
+								element.append($compile("<div>" + tpl + "</div>")(scope));
+
+							});
+
+						}
+					}
+
+				})
+				.directive("customDir", function($compile, Events) {
+
+					return {
+						link: function(scope, element, attrs) {
+
+							Events.on("updated-summary", function(results) {
+								console.log(results.total);
+							})
+
+							scope.message = "Hi Class!";
+
+							var tpl = "<div>{{message | uppercase}}</div>";
+							var linkingFn = $compile(tpl);
+							var domElements = linkingFn(scope);
+							console.dir(domElements);
+
+							element.append(domElements);
+
+
+
+						}
+					}
+
+
+				})
+				.controller("MyCtrl", function($scope, $compile) {
+
+
+
+
+					/*
+					$scope.message = "Hello World!";
+
+					$scope.updateMessageForAllApps = function() {
+						globalEvents.trigger("update-message", {
+							message: $scope.message
+						});
+					};
+
+					globalEvents.on("update-message", function(eventArgs) {
+						$scope.$applyAsync(function() {
+							$scope.message = eventArgs.message;
+						});
+					});
+					*/
+				});
+
+			$(function() {
+
+				angular.bootstrap($("#my-app"), ["MyApp"]);
+				//angular.bootstrap($("#my-app2"), ["MyApp"]);
+				//angular.bootstrap($("#my-app3"), ["MyApp"]);
+
+			});
+
+		</script>
+
+	</body>
+
+</html>
